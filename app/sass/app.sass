@@ -1,0 +1,50 @@
+@import libs
+@import fonts
+@import config
+
+// .debugGrid
+// 	+debug(rgba(0,0,0,0.13), 1px solid rgba(250,250,0,0.4))
+
+// GENERAL DOCUMENT STYLES
+::placeholder
+	color: #666
+
+::selection
+	background-color: $accent
+	color: #fff
+
+input, textarea
+	border: #666 1px solid
+	outline: none
+	&:focus:required:invalid
+		border-color: red
+	&:required:valid
+		border-color: green
+
+body
+	font-family: $default-font
+	font-size: $fontsize
+	min-width: 320px
+	position: relative
+	line-height: 1.65
+	overflow-x: hidden
+	color: $text
+
+
+.img-responsive
+	display: block
+	width: 100%
+	height: auto
+
+.text-center
+	text-align: center
+
+b, strong
+	font-weight: bold
+
+.container
+	+wrapper()
+	
+
+// CUSTOM USER STYLES & IMPORTS
+
