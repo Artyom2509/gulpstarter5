@@ -120,6 +120,7 @@ function buildcopy() {
 	return src([
 		'app/assets/css/**/*',
 		'app/assets/js/**/*',
+		'app/assets/fonts/**/*',
 		'app/assets/img/**/*',
 		'app/**/*.html',
 	], { base: 'app' })
