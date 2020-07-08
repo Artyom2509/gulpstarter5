@@ -175,7 +175,8 @@ function startwatch() {
 	watch( baseDir + '/**/' + preprocessor + '/**/*', styles );
 	watch( baseDir + '/**/*.{' + imageswatch + '}', images );
 	watch( baseDir + '/**/*.{' + fileswatch + '}' ).on( 'change', browserSync.reload );
-	watch( baseDir + '/**/*.js', scripts );
+	watch( baseDir + '/js/*.js', scripts );
+	watch( baseDir + '/js/add/*.js', otherScripts );
 }
 
 exports.browsersync = browsersync;
