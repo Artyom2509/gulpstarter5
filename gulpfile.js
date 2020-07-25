@@ -1,51 +1,12 @@
-// VARIABLES & PATHS
-let preprocessor = 'sass', // Preprocessor (sass, scss, less, styl)
-		fileswatch	 = 'html,htm,txt,json,md,woff2', // List of files extensions for watching & hard reload (comma separated)
-		imageswatch	 = 'jpg,jpeg,png,webp,ico,svg', // List of images extensions for watching & compression (comma separated)
-		baseDir			 = 'app', // Base directory path without «/» at the end
-		online			 = true; // If «false» - Browsersync will work offline without internet connection
-
-let paths = {
-
-	scripts: {
-		src: [
-			'node_modules/jquery/dist/jquery.min.js', // npm vendor example (npm i --save-dev jquery)
-			'app/libs/slick-carousel/slick/slick.min.js',
-			baseDir + '/js/app.js' // app.js. Always at the end
-		],
-		dest: baseDir + '/assets/js',
-	},
-
-	otherScripts: {
-		src: baseDir + '/js/add/*.js',
-		dest: baseDir + '/assets/js/add',
-	},
-
-	styles: {
-		src: baseDir + '/' + preprocessor + '/**/*.' + preprocessor + '',
-		dest: baseDir + '/assets/css',
-	},
-
-	images: {
-		src: baseDir + '/images/**/*',
-		dest: baseDir + '/assets/img/',
-	},
-
-	deploy: {
-		hostname: 'username@yousite.com', // Deploy hostname
-		destination: 'yousite/public_html/', // Deploy destination
-		include: [ /* '*.htaccess' */], // Included files to deploy
-		exclude: [ '**/Thumbs.db', '**/*.DS_Store' ], // Excluded files from deploy
-	},
-
-	cssOutputName: 'app.min.css',
-	jsOutputName: 'app.min.js',
-
-}
-
 // LOGIC
-const { src, dest, parallel, series, watch } = require( 'gulp' );
-const gulp-sass  = require( 'gulp-sass' );
+const {
+	src,
+	dest,
+	parallel,
+	series,
+	watch
+} = require( 'gulp' );
+const sass = require( 'gulp-sass' );
 const scss = require( 'gulp-sass' );
 const less = require( 'gulp-less' );
 const styl = require( 'gulp-stylus' );
@@ -61,6 +22,37 @@ const del = require( 'del' );
 const smartgrid = require( 'smart-grid' );
 const rename = require( 'gulp-rename' );
 
+function vars() {
+	delete require.cache[ require.resolve( './settings.js' ) ]
+	let settings = require( './settings.js' )
+
+	return baseDir = settings.vars.baseDir,
+		online = settings.vars.online,
+		setVarsPreprocessor = settings.vars.preprocessor, 
+		setVarsFileswatch = settings.vars.fileswatch, 
+		setVarsImageswatch = settings.vars.imageswatch, 
+
+		setPathScriptsSrc = settings.paths.scripts.src,
+		setPathScriptsDest = settings.paths.scripts.dest,
+
+		setPathOtherScriptsSrc = settings.paths.otherScripts.src,
+		setPathOtherScriptsDest = settings.paths.otherScripts.dest,
+
+		setPathStylesSrc = settings.paths.styles.src,
+		setPathStylesDest = settings.paths.styles.dest,
+
+		setPathImagesSrc = settings.paths.images.src,
+		setPathImagesDest = settings.paths.images.dest,
+
+		setPathDeployHostname = settings.paths.deploy.hostname,
+		setPathDeployDestination = settings.paths.deploy.destination,
+		setPathDeployInclude = settings.paths.deploy.include,
+		setPathDeployExclude = settings.paths.deploy.exclude,
+
+		setPathCssOutputName = settings.paths.cssOutputName,
+		setPathJsOutputName = settings.paths.jsOutputName;
+}
+
 function browsersync() {
 	browserSync.init( {
 		server: {
@@ -72,23 +64,23 @@ function browsersync() {
 }
 
 function scripts() {
-	return src( paths.scripts.src )
-		.pipe( concat( paths.jsOutputName ) )
+	return src( setPathScriptsSrc )
+		.pipe( concat( setPathJsOutputName ) )
 		.pipe( uglify() )
-		.pipe( dest( paths.scripts.dest ) )
+		.pipe( dest( setPathScriptsDest ) )
 		.pipe( browserSync.stream() )
 }
 
 function otherScripts() {
-	return src( paths.otherScripts.src )
+	return src( setPathOtherScriptsSrc )
 		//.pipe(uglify())
-		.pipe( dest( paths.otherScripts.dest ) )
+		.pipe( dest( setPathOtherScriptsDest ) )
 		.pipe( browserSync.stream() )
 }
 
 function styles() {
-	return src( paths.styles.src )
-		.pipe( eval( preprocessor )( {
+	return src( setPathStylesSrc )
+		.pipe( eval( setVarsPreprocessor )( {
 			outputStyle: 'expanded'
 		} ) )
 		.pipe( rename( {
@@ -107,23 +99,23 @@ function styles() {
 			},
 			/* format: 'beautify' */
 		} ) )
-		.pipe( dest( paths.styles.dest ) )
+		.pipe( dest( setPathStylesDest ) )
 		.pipe( browserSync.stream() )
 }
 
 function images() {
-	return src( paths.images.src )
-		.pipe( newer( paths.images.dest ) )
+	return src( setPathImagesSrc )
+		.pipe( newer( setPathImagesDest ) )
 		.pipe( imagemin( [
 			imagemin.gifsicle(),
 			imagemin.mozjpeg(),
 			imagemin.optipng()
 		] ) )
-		.pipe( dest( paths.images.dest ) )
+		.pipe( dest( setPathImagesDest ) )
 }
 
 function cleanimg() {
-	return del( '' + paths.images.dest + '/**/*', {
+	return del( '' + setPathImagesDest + '/**/*', {
 		force: true
 	} )
 }
@@ -134,12 +126,11 @@ function cleandist() {
 	} )
 }
 
-function grid( done ) {
-	delete require.cache[ require.resolve( './smartgrid.js' ) ]
-	let settings = require( './smartgrid.js' )
+function grid() {
+	delete require.cache[ require.resolve( './settings.js' ) ]
+	let set = require( './settings.js' )
 
-	smartgrid( './app/' + preprocessor, settings );
-	done();
+	smartgrid( './app/' + set.vars.preprocessor, set.smartgrid );
 }
 
 function buildcopy() {
@@ -160,25 +151,28 @@ function deploy() {
 	return src( baseDir + '/' )
 		.pipe( rsync( {
 			root: baseDir + '/',
-			hostname: paths.deploy.hostname,
-			destination: paths.deploy.destination,
-			include: paths.deploy.include,
-			exclude: paths.deploy.exclude,
+			hostname: setPathDeployHostname,
+			destination: setPathDeployDestination,
+			include: setPathDeployInclude,
+			exclude: setPathDeployExclude,
 			recursive: true,
 			archive: true,
 			silent: false,
 			compress: true
+
 		} ) )
 }
 
 function startwatch() {
-	watch( baseDir + '/**/' + preprocessor + '/**/*', styles );
-	watch( baseDir + '/**/*.{' + imageswatch + '}', images );
-	watch( baseDir + '/**/*.{' + fileswatch + '}' ).on( 'change', browserSync.reload );
+	watch( baseDir + '/**/' + setVarsPreprocessor + '/**/*', styles );
+	watch( baseDir + '/**/*.{' + setVarsImageswatch + '}', images );
+	watch( baseDir + '/**/*.{' + setVarsFileswatch + '}' ).on( 'change', browserSync.reload );
 	watch( baseDir + '/js/*.js', scripts );
 	watch( baseDir + '/js/add/*.js', otherScripts );
+	watch( './settings.js', parallel( vars, grid, styles, scripts, browsersync ) );
 }
 
+exports.vars = vars;
 exports.browsersync = browsersync;
 exports.styles = styles;
 exports.scripts = scripts;
@@ -190,4 +184,4 @@ exports.cleanimg = cleanimg;
 exports.deploy = deploy;
 exports.assets = series( cleanimg, styles, scripts, images );
 exports.build = series( cleandist, cleanimg, styles, scripts, images, buildcopy );
-exports.default = parallel( grid, images, styles, scripts, otherScripts, browsersync, startwatch );
+exports.default = parallel( vars, grid, images, styles, scripts, otherScripts, browsersync, startwatch );
