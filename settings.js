@@ -78,69 +78,9 @@ const paths = {
 };
 
 
-
-let settings = {
-  paths: {
-    scripts: {
-      src: paths.scripts.src,
-      dest: paths.scripts.dest,
-    },
-    otherScripts: {
-      src: paths.otherScripts.src,
-      dest: paths.otherScripts.dest,
-    },
-    styles: {
-      src: paths.styles.src,
-      dest: paths.styles.dest,
-    },
-    images: {
-      src: paths.images.src,
-      dest: paths.images.dest,
-    },
-    deploy: {
-      hostname: paths.deploy.hostname,
-      destination: paths.deploy.destination,
-      include: paths.deploy.include,
-      exclude: paths.deploy.exclude,
-    },
-    cssOutputName: paths.cssOutputName,
-    jsOutputName: paths.jsOutputName,
-  },
-
-  smartgrid: {
-    filename: smartgrid.filename,
-    outputStyle: vars.preprocessor,
-    columns: smartgrid.columns,
-    offset: smartgrid.offset,
-    mobileFirst: smartgrid.mobileFirst,
-    container: {
-      maxWidth: smartgrid.container.maxWidth,
-      fields: smartgrid.container.fields
-    },
-    breakPoints: {
-      md: {
-        width: smartgrid.breakPoints.md.width,
-      },
-      sm: {
-        width: smartgrid.breakPoints.sm.width,
-        fields: smartgrid.breakPoints.sm.fields
-      },
-      xs: {
-        width: smartgrid.breakPoints.xs.width
-      },
-      xxs: {
-        width: smartgrid.breakPoints.xxs.width
-      }
-    }
-  },
-
-  vars: {
-    preprocessor: vars.preprocessor,
-    fileswatch: vars.fileswatch,
-    imageswatch: vars.imageswatch,
-    baseDir: vars.baseDir,
-    online: vars.online,
-  }
-};
+const settings = {};
+settings.vars = vars;
+settings.paths = paths;
+settings.smartgrid = smartgrid;
 
 module.exports = settings;
