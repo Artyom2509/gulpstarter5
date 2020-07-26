@@ -1,93 +1,146 @@
-let vars = {
-    preprocessor: 'sass', // Preprocessor (sass, scss, less, styl)
-    fileswatch: 'html,htm,txt,json,md,woff2', // List of files extensions for watching & hard reload (comma separated)
-    imageswatch: 'jpg,jpeg,png,webp,ico,svg', // List of images extensions for watching & compression (comma separated)
-    baseDir: 'app', // Base directory path without «/» at the end
-    online: true, // If «false» - Browsersync will work offline without internet connection
+// VARS =============================================================
+const vars = {
+  preprocessor: 'sass', // Preprocessor (sass, scss, less, styl)
+  fileswatch: 'html,htm,txt,json,md,woff2', // List of files extensions for watching & hard reload (comma separated)
+  imageswatch: 'jpg,jpeg,png,webp,ico,svg', // List of images extensions for watching & compression (comma separated)
+  baseDir: 'app', // Base directory path without «/» at the end
+  online: true, // If «false» - Browsersync will work offline without internet connection
 };
 
-let settings = {
-  
-  // PATHS =============================================================
-  paths: {
-
-    scripts: {
-      src: [
-        // 'node_modules/jquery/dist/jquery.min.js', // npm vendor example (npm i --save-dev jquery)
-        'app/js/app.js' // app.js. Always at the end
-      ],
-      dest: 'app/assets/js',
+// SMARTGRID ========================================================
+const smartgrid = {
+  filename: "_smart-grid",
+  columns: 12,
+  /* number of grid columns */
+  offset: '30px',
+  /* gutter width px || % || rem */
+  mobileFirst: false,
+  /* mobileFirst ? 'min-width' : 'max-width' */
+  container: {
+    maxWidth: '1240px',
+    /* max-width оn very large screen */
+    fields: '15px' /* side fields */
+  },
+  breakPoints: {
+    md: {
+      width: '992px',
     },
-
-    otherScripts: {
-      src: 'app/js/add/*.js',
-      dest: 'app/assets/js/add',
+    sm: {
+      width: '780px',
+      fields: '15px' /* set fields only if you want to change container.fields */
     },
-
-    styles: {
-      src: 'app/' + vars.preprocessor + '/**/*.' + vars.preprocessor + '',
-      dest: 'app/assets/css',
+    xs: {
+      width: '560px'
     },
+    xxs: {
+      width: '480px'
+    }
+  }
+};
 
-    images: {
-      src: 'app/images/**/*',
-      dest: 'app/assets/img/',
-    },
+// PATHS ============================================================
+const paths = {
 
-    deploy: {
-      hostname: 'username@yousite.com', // Deploy hostname
-      destination: 'yousite/public_html/', // Deploy destination
-      include: [ /* '*.htaccess' */], // Included files to deploy
-      exclude: [ '**/Thumbs.db', '**/*.DS_Store' ], // Excluded files from deploy
-    },
-
-    cssOutputName: 'app.min.css',
-    jsOutputName: 'app.min.js',
-
+  scripts: {
+    src: [
+      // 'node_modules/jquery/dist/jquery.min.js', // npm vendor example (npm i --save-dev jquery)
+      // 'app/libs/',
+      'app/js/app.js' // app.js. Always at the end
+    ],
+    dest: 'app/assets/js',
   },
 
-  // SMARTGRID =============================================================
+  otherScripts: {
+    src: 'app/js/add/*.js',
+    dest: 'app/assets/js/add',
+  },
+
+  styles: {
+    src: 'app/' + vars.preprocessor + '/**/*.' + vars.preprocessor + '',
+    dest: 'app/assets/css',
+  },
+
+  images: {
+    src: 'app/images/**/*',
+    dest: 'app/assets/img/',
+  },
+
+  deploy: {
+    hostname: 'username@yousite.com', // Deploy hostname
+    destination: 'yousite/public_html/', // Deploy destination
+    include: [ /* '*.htaccess' */], // Included files to deploy
+    exclude: [ '**/Thumbs.db', '**/*.DS_Store' ], // Excluded files from deploy
+  },
+
+  cssOutputName: 'app.min.css',
+  jsOutputName: 'app.min.js',
+
+};
+
+
+
+let settings = {
+  paths: {
+    scripts: {
+      src: paths.scripts.src,
+      dest: paths.scripts.dest,
+    },
+    otherScripts: {
+      src: paths.otherScripts.src,
+      dest: paths.otherScripts.dest,
+    },
+    styles: {
+      src: paths.styles.src,
+      dest: paths.styles.dest,
+    },
+    images: {
+      src: paths.images.src,
+      dest: paths.images.dest,
+    },
+    deploy: {
+      hostname: paths.deploy.hostname,
+      destination: paths.deploy.destination,
+      include: paths.deploy.include,
+      exclude: paths.deploy.exclude,
+    },
+    cssOutputName: paths.cssOutputName,
+    jsOutputName: paths.jsOutputName,
+  },
+
   smartgrid: {
-    filename: "_smart-grid",
+    filename: smartgrid.filename,
     outputStyle: vars.preprocessor,
-    /* less || scss || sass || styl */
-    columns: 12,
-    /* number of grid columns */
-    offset: '30px',
-    /* gutter width px || % || rem */
-    mobileFirst: false,
-    /* mobileFirst ? 'min-width' : 'max-width' */
+    columns: smartgrid.columns,
+    offset: smartgrid.offset,
+    mobileFirst: smartgrid.mobileFirst,
     container: {
-      maxWidth: '1240px',
-      /* max-width оn very large screen */
-      fields: '15px' /* side fields */
+      maxWidth: smartgrid.container.maxWidth,
+      fields: smartgrid.container.fields
     },
     breakPoints: {
       md: {
-        width: '992px',
+        width: smartgrid.breakPoints.md.width,
       },
       sm: {
-        width: '780px',
-        fields: '15px' /* set fields only if you want to change container.fields */
+        width: smartgrid.breakPoints.sm.width,
+        fields: smartgrid.breakPoints.sm.fields
       },
       xs: {
-        width: '560px'
+        width: smartgrid.breakPoints.xs.width
       },
       xxs: {
-        width: '480px'
+        width: smartgrid.breakPoints.xxs.width
       }
     }
   },
 
-   // VARIABLES =============================================================
-   vars: {
-    preprocessor: vars.preprocessor, // Preprocessor (sass, scss, less, styl)
-    fileswatch: vars.fileswatch, // List of files extensions for watching & hard reload (comma separated)
-    imageswatch: vars.imageswatch, // List of images extensions for watching & compression (comma separated)
-    baseDir: vars.baseDir, // Base directory path without «/» at the end
-    online: vars.online, // If «false» - Browsersync will work offline without internet connection
+  vars: {
+    preprocessor: vars.preprocessor,
+    fileswatch: vars.fileswatch,
+    imageswatch: vars.imageswatch,
+    baseDir: vars.baseDir,
+    online: vars.online,
   }
-
 };
 
 module.exports = settings;
