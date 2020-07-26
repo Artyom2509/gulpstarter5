@@ -10,6 +10,7 @@ const vars = {
 // SMARTGRID ========================================================
 const smartgrid = {
   filename: "_smart-grid",
+  outputStyle: vars.preprocessor,
   columns: 12,
   /* number of grid columns */
   offset: '30px',
